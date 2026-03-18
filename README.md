@@ -48,6 +48,4 @@ ENTER       # Apply all patches
 
 ## Notes
 
-* The script only modifies **local system files** and contains **no personal data**.
-* Use with caution, especially on production systems.
 * For the original Caelestia Shell repository, see: [https://github.com/caelestia-dots/caelestia](https://github.com/caelestia-dots/caelestia)
