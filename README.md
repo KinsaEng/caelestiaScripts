@@ -1,6 +1,6 @@
 # Caelestia Shell Patch Script
 
-This script automates routine changes I make to [**Caelestia Shell**](https://github.com/caelestia-dots/caelestia) on a [**Hyprland**](https://github.com/hyprwm/Hyprland) setup. After updates, it quickly applies all my preferred patches to fix or modify default behavior.
+This script automates routine changes I make to [**Caelestia Shell**](https://github.com/caelestia-dots/shell) on a [**Hyprland**](https://github.com/hyprwm/Hyprland) setup. After updates, it quickly applies all my preferred patches to fix or modify default behavior.
 
 > ⚠️ **Warning:** This script modifies system files and requires **root privileges**. Use at your own risk.
 
