@@ -39,10 +39,10 @@ fi
 echo -e "${CYAN}==>${NC} Available patches:"
 echo -e " ${CYAN}1) 24-hour clock"
 echo -e " 2) Celsius"
-echo -e " 3) Notifications container$ (experimental)"
-echo -e " 4) Power options" (exclusion recommended)
+echo -e " 3) Notifications container"
+echo -e " 4) Power options ${NC}exclusion recommended)${CYAN}"
 echo -e " 5) Discord -> Signal"
-echo -e " 6) GIF patch" (exclusion recommended)
+echo -e " 6) GIF patch ${NC}exclusion recommended${CYAN}"
 echo -e " 7) Lockscreen text"
 echo
 
