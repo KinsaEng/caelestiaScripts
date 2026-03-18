@@ -52,7 +52,7 @@ sudo ./caelestia-patch.sh
 ENTER       # Apply all patches
 
 
-##Requirements
+## Requirements
 
 - yay (for Arch-based systems)
 
