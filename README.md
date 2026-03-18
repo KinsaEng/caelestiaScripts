@@ -22,10 +22,10 @@ This script automates routine changes I make to [**Caelestia Shell**](https://gi
 
 ```bash
 # Run the script with root privileges
-sudo ./caelestia-patch.sh
+sudo ./patch.sh
 
 # Restore mode (reinstall Caelestia Shell/CLI)
-./caelestia-patch.sh --restore
+./patch.sh --restore
 ```
 
 * Exclude patches during execution:
