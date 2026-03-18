@@ -11,9 +11,9 @@ This script automates routine changes I make to [**Caelestia Shell**](https://gi
 1. **24-hour Clock** – Converts the default 12-hour AM/PM clock format to 24-hour format.
 2. **Celsius** – Forces temperature display to Celsius instead of Fahrenheit.
 3. **Notifications Container** – Adds right-click/middle-click functionality on the "Do Not Disturb" button to open the notification dock.
-4. **Power Options** – Fixes default power options, replaces `loginctl` with `hyprctl`, and adds a custom Windows switch script.
+4. **Power Options** – Fixes default power options, replaces `loginctl` and `systemctl` with `hyprctl`, and adds a custom Windows switch script (you might wanna change windows switch script by changing "switchos.sh" to "hibernate" in the script). 
 5. **Communication Workspace** – Changes default workspace messenger from Discord to Signal (Win+C opens Signal).
-6. **GIF Patch** – Replaces default GIFs with personal preference GIFs.
+6. **GIF Patch** – Replaces default GIFs with personal preference GIFs (you might wanna change it too).
 7. **Lockscreen Notifications** – Prevents notification content from showing on the lockscreen.
 
 ---
