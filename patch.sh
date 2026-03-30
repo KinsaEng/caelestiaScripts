@@ -1,9 +1,11 @@
 #!/bin/bash
 
 CONFIG_DIR="/etc/xdg/quickshell/caelestia"
+SHELL_DIR="/etc/xdg/quickshell/caelestia/shell.qml"
 NOTIFY_DIR="/etc/xdg/quickshell/caelestia/modules/utilities/cards/Toggles.qml"
 PCONFIG_FILE="/usr/lib/python3.14/site-packages/caelestia/subcommands/toggle.py"
 POWER_FILE="/etc/xdg/quickshell/caelestia/config/SessionConfig.qml"
+POWER_FILE_CONTENT="/etc/xdg/quickshell/caelestia/modules/session/Content.qml"
 LOCK_FILE="/etc/xdg/quickshell/caelestia/modules/lock/NotifGroup.qml"
 
 BLUE='\033[0;34m'
@@ -35,7 +37,7 @@ if [[ $EUID -ne 0 ]]; then
     exec sudo "$0" "$@"
 fi
 
-# Exclude Menu 
+# Exclude Menu
 echo -e "${CYAN}==>${NC} Available patches:"
 echo -e " ${CYAN}1) 24-hour clock"
 echo -e " 2) Celsius"
@@ -44,6 +46,7 @@ echo -e " 4) Power options ${NC}exclusion recommended)${CYAN}"
 echo -e " 5) Discord -> Signal"
 echo -e " 6) GIF patch ${NC}exclusion recommended${CYAN}"
 echo -e " 7) Lockscreen text"
+# echo -e " 8) Custom OSD for fullscreen"
 echo
 
 echo -e " ==> ${NC} " 'Patches to exclude: (eg: "1 2 3", "1-3" or ENTER to skip, recommended "4 6")  ' "${CYAN}"
@@ -88,6 +91,10 @@ fi
 # Patch 2: Celsius
 if ! is_excluded 2; then
     echo "[*] Forcing Celsius display..."
+    grep -rl "Config.services.useFahrenheitPerformance" "$CONFIG_DIR" | while read -r file; do
+        sed -i 's/Config.services.useFahrenheitPerformance/false/g' "$file"
+        echo "Patched: $file"
+    done
     grep -rl "Config.services.useFahrenheit" "$CONFIG_DIR" | while read -r file; do
         sed -i 's/Config.services.useFahrenheit/false/g' "$file"
         echo "Patched: $file"
@@ -110,8 +117,11 @@ if ! is_excluded 4; then
     if [[ -f "$POWER_FILE" ]]; then
         sed -i 's/"loginctl", "terminate-user", ""/"hyprctl", "dispatch", "exit"/g' "$POWER_FILE"
         sed -i 's/"systemctl", "poweroff"/"poweroff"/g' "$POWER_FILE"
-        sed -i 's/"systemctl", "hibernate"/"hyprctl", "dispatch", "exec", "switchos.sh"/g' "$POWER_FILE"
+        sed -i '/property string hibernate: "downloading"/a \        property string switchos: "window"' "$POWER_FILE"
+        sed -i '/property list<string> hibernate:/a \        property list<string> switchos: ["switchos.sh"]' "$POWER_FILE"
         sed -i 's/"systemctl", "reboot"/"reboot"/g' "$POWER_FILE"
+        sed -i 's/icon: Config.session.icons.hibernate/icon: Config.session.icons.switchos/g' "$POWER_FILE_CONTENT"
+        sed -i 's/command: Config.session.commands.hibernate/command: Config.session.commands.switchos/g' "$POWER_FILE_CONTENT"
         echo "Patched: $POWER_FILE"
     fi
 fi
@@ -143,13 +153,13 @@ if ! is_excluded 7; then
     echo "[*] Patching lockscreen notification text..."
     if [[ -f "$LOCK_FILE" ]]; then
         perl -0777 -i.bak -pe '
-        s/component NotifLine: StyledText\s*\{.*?TextMetrics\s*\{.*?\}\s*\}/component NotifLine: StyledText {  
+        s/component NotifLine: StyledText\s*\{.*?TextMetrics\s*\{.*?\}\s*\}/component NotifLine: StyledText {
             id: notifLine
-            Layout.fillWidth: true  
-            text: qsTr("%1 notification%2").arg(root.notifs.length).arg(root.notifs.length === 1 ? "" : "s")  
-            color: root.urgency === "critical" ? Colours.palette.m3onSecondaryContainer : Colours.palette.m3onSurface  
-            font.pointSize: Appearance.font.size.small  
-            font.italic: true  
+            Layout.fillWidth: true
+            text: qsTr("%1 notification%2").arg(root.notifs.length).arg(root.notifs.length === 1 ? "" : "s")
+            color: root.urgency === "critical" ? Colours.palette.m3onSecondaryContainer : Colours.palette.m3onSurface
+            font.pointSize: Appearance.font.size.small
+            font.italic: true
 
             Component.onCompleted: modelData.lock(this)
             Component.onDestruction: modelData.unlock(this)
@@ -159,6 +169,19 @@ if ! is_excluded 7; then
         echo "Patched: $LOCK_FILE"
     fi
 fi
+
+# # Patch 8: Custom OSD for fullscreen
+# if ! is_excluded 8; then
+#     echo "[*] Patching $SHELL_DIR Custom OSD for fullscreen..."
+#     if [[ -f "$SHELL_DIR" ]]; then
+        
+#         sed -i '/import "modules\/lock"/a import "modules/fosd"' "$SHELL_DIR"
+#         sed -i '/Drawers {}/a \    Fosd {}' "$SHELL_DIR"
+
+#         echo "Patched: $SHELL_DIR"
+#     fi
+# fi
+
 
 # Done
 echo
