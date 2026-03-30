@@ -30,7 +30,7 @@ if [[ ! -f "$INSTALL_PATH" ]]; then
     echo "Installed successfully."
 fi
 
-# Get Windows Boot ID safely
+# Get Windows Boot ID
 WINDOWS_ID=$(efibootmgr | awk '/Windows Boot Manager/ {print substr($1,5,4); exit}')
 
 if [[ -z "$WINDOWS_ID" ]]; then
