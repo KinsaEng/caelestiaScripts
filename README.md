@@ -26,6 +26,12 @@ sudo ./patch.sh
 
 # Restore mode (reinstall Caelestia Shell/CLI)
 ./patch.sh --restore
+
+# for reboot to windows script first set PASSWORD
+nano ./switchos.sh
+
+# and run it once
+./switchos.sh
 ```
 
 * Exclude patches during execution:
