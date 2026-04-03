@@ -104,9 +104,64 @@ fi
 # Patch 3: Notifications
 if ! is_excluded 3; then
     echo "[*] Adding notifications container..."
+
     if [[ -f "$NOTIFY_DIR" ]]; then
+
+        # --- 1. import Quickshell.Io ---
+        if ! grep -q 'import Quickshell.Io' "$NOTIFY_DIR"; then
+            sed -i '/import qs.modules.bar.popouts/a import Quickshell.Io' "$NOTIFY_DIR"
+            echo "[+] Added Quickshell.Io import"
+        fi
+
+        # --- 2. sidebar Process ---
+        if ! grep -q 'id: sidebarProcess' "$NOTIFY_DIR"; then
+            sed -i '/id: root/a \
+\
+    Process { \
+        id: sidebarProcess \
+        command: ["/home/hyprkinsa/sidebar.sh"] \
+        function toggleSidebar() { \
+            this.startDetached(); \
+        } \
+    }\
+' "$NOTIFY_DIR"
+            echo "[+] Added sidebar process"
+        fi
+
+        # --- 3. replace DND block (FULL delegate replacement) ---
         perl -0777 -i.bak -pe '
-        s/onClicked: Notifs\.dnd = !Notifs\.dnd/MouseArea {\n    anchors.fill: parent\n    acceptedButtons: Qt.LeftButton | Qt.RightButton\n\n    onClicked: \(mouse\) => {\n        if \(mouse.button === Qt.LeftButton\) {\n            Notifs.dnd = !Notifs.dnd\n        } else if \(mouse.button === Qt.RightButton\) {\n            Quickshell.execDetached\(\["qs", "-c", "caelestia", "ipc", "call", "drawers", "toggle", "sidebar"\]\)\n        }\n    }\n}/s' "$NOTIFY_DIR"
+s{
+DelegateChoice\s*\{\s*
+\s*roleValue:\s*"dnd"\s*
+\s*delegate:\s*Toggle\s*\{\s*
+\s*icon:\s*"notifications_off"\s*
+\s*checked:\s*Notifs\.dnd\s*
+\s*onClicked:\s*Notifs\.dnd\s*=\s*!Notifs\.dnd\s*
+\s*\}\s*
+\s*\}
+}{
+DelegateChoice {
+    roleValue: "dnd"
+    delegate: Toggle {
+        icon: "notifications_off"
+        checked: Notifs.dnd
+
+        MouseArea {
+            anchors.fill: parent
+            acceptedButtons: Qt.LeftButton | Qt.RightButton
+
+            onClicked: (mouse) => {
+                if (mouse.button === Qt.LeftButton) {
+                    Notifs.dnd = !Notifs.dnd
+                } else if (mouse.button === Qt.RightButton) {
+                    sidebarProcess.toggleSidebar()
+                }
+            }
+        }
+    }
+}
+}gsx' "$NOTIFY_DIR"
+
         echo "Patched: $NOTIFY_DIR"
     fi
 fi
