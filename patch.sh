@@ -4,7 +4,7 @@ CONFIG_DIR="/etc/xdg/quickshell/caelestia"
 SHELL_DIR="/etc/xdg/quickshell/caelestia/shell.qml"
 NOTIFY_DIR="/etc/xdg/quickshell/caelestia/modules/utilities/cards/Toggles.qml"
 PCONFIG_FILE="/usr/lib/python3.14/site-packages/caelestia/subcommands/toggle.py"
-POWER_FILE="/etc/xdg/quickshell/caelestia/config/SessionConfig.qml"
+# POWER_FILE="/etc/xdg/quickshell/caelestia/config/SessionConfig.qml"
 POWER_FILE_CONTENT="/etc/xdg/quickshell/caelestia/modules/session/Content.qml"
 LOCK_FILE="/etc/xdg/quickshell/caelestia/modules/lock/NotifGroup.qml"
 
@@ -38,6 +38,7 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 # Exclude Menu
+echo "[INFO] use --restore flag to reinstall from AUR (yay)"
 echo -e "${CYAN}==>${NC} Available patches:"
 echo -e " ${CYAN}1) 24-hour clock"
 echo -e " 2) Celsius"
@@ -82,8 +83,8 @@ echo
 # Patch 1: Clock
 if ! is_excluded 1; then
     echo "[*] Forcing 24-hour clock..."
-    grep -rl "Config.services.useTwelveHourClock" "$CONFIG_DIR" | while read -r file; do
-        sed -i 's/Config.services.useTwelveHourClock/false/g' "$file"
+    grep -rl "GlobalConfig.services.useTwelveHourClock" "$CONFIG_DIR" | while read -r file; do
+        sed -i 's/GlobalConfig.services.useTwelveHourClock/false/g' "$file"
         echo "Patched: $file"
     done
 fi
@@ -91,12 +92,12 @@ fi
 # Patch 2: Celsius
 if ! is_excluded 2; then
     echo "[*] Forcing Celsius display..."
-    grep -rl "Config.services.useFahrenheitPerformance" "$CONFIG_DIR" | while read -r file; do
-        sed -i 's/Config.services.useFahrenheitPerformance/false/g' "$file"
+    grep -rl "GlobalConfig.services.useFahrenheit" "$CONFIG_DIR" | while read -r file; do
+        sed -i 's/GlobalConfig.services.useFahrenheit/false/g' "$file"
         echo "Patched: $file"
     done
-    grep -rl "Config.services.useFahrenheit" "$CONFIG_DIR" | while read -r file; do
-        sed -i 's/Config.services.useFahrenheit/false/g' "$file"
+    grep -rl "falsePerformance" "$CONFIG_DIR" | while read -r file; do
+        sed -i 's/falsePerformance/false/g' "$file"
         echo "Patched: $file"
     done
 fi
@@ -170,13 +171,13 @@ fi
 if ! is_excluded 4; then
     echo "[*] Patching power options..."
     if [[ -f "$POWER_FILE" ]]; then
-        sed -i 's/"loginctl", "terminate-user", ""/"hyprctl", "dispatch", "exit"/g' "$POWER_FILE"
-        sed -i 's/"systemctl", "poweroff"/"poweroff"/g' "$POWER_FILE"
-        sed -i '/property string hibernate: "downloading"/a \        property string switchos: "window"' "$POWER_FILE"
-        sed -i '/property list<string> hibernate:/a \        property list<string> switchos: ["switchos.sh"]' "$POWER_FILE"
-        sed -i 's/"systemctl", "reboot"/"reboot"/g' "$POWER_FILE"
-        sed -i 's/icon: Config.session.icons.hibernate/icon: Config.session.icons.switchos/g' "$POWER_FILE_CONTENT"
-        sed -i 's/command: Config.session.commands.hibernate/command: Config.session.commands.switchos/g' "$POWER_FILE_CONTENT"
+        #sed -i 's/"loginctl", "terminate-user", ""/"hyprctl", "dispatch", "exit"/g' "$POWER_FILE" ## removed after config removal from root
+        #sed -i 's/"systemctl", "poweroff"/"poweroff"/g' "$POWER_FILE"
+        #sed -i '/property string hibernate: "downloading"/a \        property string switchos: "window"' "$POWER_FILE"
+        #sed -i '/property list<string> hibernate:/a \        property list<string> switchos: ["switchos.sh"]' "$POWER_FILE"
+        #sed -i 's/"systemctl", "reboot"/"reboot"/g' "$POWER_FILE"
+        sed -i 's/icon: Config.session.icons.hibernate/icon: "window"/g' "$POWER_FILE_CONTENT"
+        sed -i 's/command: Config.session.commands.hibernate/command: ["bash", "-c", "switchos.sh"]/g' "$POWER_FILE_CONTENT"
         echo "Patched: $POWER_FILE"
     fi
 fi
