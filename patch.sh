@@ -170,15 +170,15 @@ fi
 # Patch 4: Power
 if ! is_excluded 4; then
     echo "[*] Patching power options..."
-    if [[ -f "$POWER_FILE" ]]; then
+    if [[ -f "$POWER_FILE_CONTENT" ]]; then
         #sed -i 's/"loginctl", "terminate-user", ""/"hyprctl", "dispatch", "exit"/g' "$POWER_FILE" ## removed after config removal from root
         #sed -i 's/"systemctl", "poweroff"/"poweroff"/g' "$POWER_FILE"
         #sed -i '/property string hibernate: "downloading"/a \        property string switchos: "window"' "$POWER_FILE"
         #sed -i '/property list<string> hibernate:/a \        property list<string> switchos: ["switchos.sh"]' "$POWER_FILE"
         #sed -i 's/"systemctl", "reboot"/"reboot"/g' "$POWER_FILE"
-        sed -i 's/icon: Config.session.icons.hibernate/icon: "window"/g' "$POWER_FILE_CONTENT"
-        sed -i 's/command: Config.session.commands.hibernate/command: ["bash", "-c", "switchos.sh"]/g' "$POWER_FILE_CONTENT"
-        echo "Patched: $POWER_FILE"
+        sed -i 's|icon: Config\.session\.icons\.hibernate|icon: "window"|g' "$POWER_FILE_CONTENT"
+        sed -i 's|command: Config\.session\.commands\.hibernate|command: \["bash","-c","switchos.sh"\]|g' "$POWER_FILE_CONTENT"
+        echo "Patched: $POWER_FILE_CONTENT"
     fi
 fi
 
