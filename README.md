@@ -18,6 +18,13 @@ This script automates routine changes I make to [**Caelestia Shell**](https://gi
 
 ---
 
+## Install
+
+```bash
+git clone https://github.com/KinsaEng/caelestiaScripts.git ~/caelestiaScripts
+```
+
+
 ## Usage
 
 ```bash
